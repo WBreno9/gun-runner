@@ -24,10 +24,11 @@ public:
         Mesh(const std::string &file_name);
         std::string getPath();
         void loadMesh(const std::string &file_name);
+        const std::vector<Vertex>* GetMeshVertices();
 
-        std::vector<Vertex> vertices;
 private:
         std::string path;
+        std::vector<Vertex> vertices;
 };
 
 #endif
