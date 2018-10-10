@@ -1,18 +1,7 @@
 #ifndef GUTILS_H
 #define GUTILS_H
 
-#include <iostream>
-#include <cmath>
-#include <cstdlib>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/vector_angle.hpp>
+#include <inc.h>
 
 namespace {
 	glm::vec2 p1_debug , p2_debug, q1_debug, q2_debug, res_debug;
