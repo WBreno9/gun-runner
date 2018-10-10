@@ -19,3 +19,18 @@ A game with running and gunning
     - World grid [x]
     - Entities bounding spheres [x]
     - Culling test [x]
+
+# Build
+
+Create build directory.
+```
+cd ~/gun_runner
+mkdir build
+```
+
+Run cmake on build directory.
+```
+cd build
+cmake -G "Unix Makefiles" ../
+make
+```
