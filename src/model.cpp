@@ -64,3 +64,8 @@ void Mesh::loadMesh(const std::string &file_name) {
 
         this->vertices = vertices;
 }
+
+const std::vector<Vertex>* Mesh::GetMeshVertices()
+{
+        return &vertices;
+}
