@@ -22,7 +22,6 @@ struct Vertex {
 class Mesh {
 public:
         Mesh(const std::string &file_name);
-        std::vector<Vertex> getMesh();
         std::string getPath();
         void loadMesh(const std::string &file_name);
 
