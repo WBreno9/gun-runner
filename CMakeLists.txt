@@ -9,10 +9,11 @@ set(SOURCES include/inc.h
         src/target.cpp include/target.h
         src/projectile.cpp include/projectile.h
         src/ship.cpp include/ship.h
-        src/hbar.cpp include/hbar.h)
+        src/hbar.cpp include/hbar.h
+        src/model.cpp include/model.h)
 
 find_package(glfw3 3.1.2 REQUIRED)
 
 include_directories("include/")
 add_executable(gun_runner ${SOURCES})
-target_link_libraries(gun_runner pthread GL GLU GLEW glfw)
+target_link_libraries(gun_runner pthread GL GLU GLEW glfw assimp)

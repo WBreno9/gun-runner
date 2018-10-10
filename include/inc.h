@@ -2,6 +2,7 @@
 #define INC_H
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <random>
