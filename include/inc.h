@@ -19,4 +19,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+typedef uint32_t ModelHandle;
+
 #endif

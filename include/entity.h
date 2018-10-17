@@ -3,13 +3,15 @@
 
 #include <inc.h>
 #include <gutils.h>
+#include <renderer.h>
+
+#include <map>
 
 class Entity
 {
 public:
 	static GLFWwindow* window;
 	static float delta;
-	static glm::vec2 playArea;
 	
 	bool isDead;
 	float lifeTime;
@@ -19,18 +21,23 @@ public:
 
 	bool visible;
 
-	std::vector<glm::vec2> vertices;
+        bool modelActive;
+        ModelHandle modelHandle;
+        void SetModel(const std::string &modelName);
+        static const std::map<std::string, ModelHandle> *modelMap;
 
-	glm::vec2 pos;
-	glm::vec2 forward;
-	float rotation;
-	float size;
+        /* TODO */
+        /* Create a transform class */
+	glm::vec3 pos;
+	glm::vec3 forward;
+        glm::vec3 rotation;
+        glm::vec3 scale;
 
 	float DeAccelMul;
-	glm::vec2 accelDir;
+	glm::vec3 accelDir;
 
-	glm::vec2 BBoxMax;
-	glm::vec2 BBoxMin;
+	glm::vec3 BBoxMax;
+	glm::vec3 BBoxMin;
 
 	Entity();
 	virtual ~Entity();
@@ -48,14 +55,8 @@ public:
 
 	virtual void Damage(unsigned d);
 
-	void Draw();
 	void UpdateMatrix();
 	void UpdateVectors();
-
-	bool OutsideOfPlayArea(bool adjust);
-	void CalculateBBox();
-	bool TestBBoxCollision(Entity*);
-	bool TestLineSegCollision(Entity*, glm::vec2&);
 
 	Entity* FindByType(std::string);
 	Entity* FindNearestByType(std::string);

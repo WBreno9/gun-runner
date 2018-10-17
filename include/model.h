@@ -8,27 +8,41 @@
 #include <assimp/scene.h>
 
 struct Vertex {
-        Vertex(glm::vec4 c, glm::vec3 n, glm::vec2 t) {
+        Vertex(glm::vec3 c, glm::vec3 n, glm::vec2 t) {
                 coords = c;
                 normal = n;
                 texture = t;
         }
 
-        glm::vec4 coords;
+        glm::vec3 coords;
         glm::vec3 normal;
         glm::vec2 texture;
 };
 
-class Mesh {
-public:
-        Mesh(const std::string &file_name);
-        std::string getPath();
-        void loadMesh(const std::string &file_name);
-        const std::vector<Vertex>* GetMeshVertices();
-
-private:
-        std::string path;
+struct Mesh {
         std::vector<Vertex> vertices;
+        std::vector<GLushort> indices;
+
+        std::string textureName;
+
+        GLuint indexOffset;
+        GLuint vertOffset;
+};
+
+class Model {
+public:
+        Model(const std::string &file_name);
+
+        std::string GetPath();
+
+        bool LoadModel(const std::string &file_name);
+
+        std::vector<Mesh>* GetMeshes();
+private:
+        std::string name;
+        std::string path;
+
+        std::vector<Mesh> meshes;
 };
 
 #endif

@@ -1,124 +1,153 @@
 #include <game.h>
+#include <empty.h>
 
 static void error_callback(int error, const char* desc)
 {
-	std::cout << desc << std::endl;
+        std::clog << desc << std::endl;
 }
 
 Game::Game() {
-	window = nullptr;
+        window = nullptr;
+        mainCamera = nullptr;
 }
 
 Game::~Game() {
-	Entity::SetAllDead();
-	Entity::ReapDeadEntities();
+        Entity::SetAllDead();
+        Entity::ReapDeadEntities();
 
-    glfwDestroyWindow(window);
-	glfwTerminate();
+        delete renderer;
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
 }
 
 void Game::createWindow(unsigned w, unsigned h)
 {
-    glfwInit();
-	
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_FLOATING, GL_FALSE);
+        std::clog << "Initializing GLFW" << std::endl;
+        glfwInit();
 
-	window = glfwCreateWindow(w, h, "DIS", 
-							nullptr, nullptr);
-		
-	Entity::window = window;
-	
-	glfwMakeContextCurrent(window);
-	glfwSetErrorCallback(error_callback);
-	
-	glfwSwapInterval(0);
+        std::clog << "Creating window" << std::endl;
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_FLOATING, GL_FALSE);
+
+        window = glfwCreateWindow(w, h, "DIS", 
+                        nullptr, nullptr);
+
+        std::clog << "Setting OGL context" << std::endl;
+        glfwMakeContextCurrent(window);
+        glfwSetErrorCallback(error_callback);
+
+        glfwSwapInterval(0);
+
+        std::clog << "Intializing GLEW" << std::endl;
+        glewExperimental = GL_TRUE;
+        glewInit();
+
+        std::clog << "---------------------------------------" << std::endl;
+        std::clog << "GPU Vendor: "
+                  << (const char*)glGetString(GL_VENDOR) << std::endl;
+
+        std::clog << "Renderer: "
+                  << (const char*)glGetString(GL_RENDERER) << std::endl;
+
+        std::clog << "OpenGL Version: "
+                  << (const char*)glGetString(GL_VERSION) << std::endl;
+        std::clog << "---------------------------------------" << std::endl;
+
+        width = w;
+        height = h;
+
+        renderer = new Renderer();
+        Entity::modelMap = renderer->GetModelMap();
 }
 
 void Game::start()
 {
-    if (window == nullptr) {
-        std::cerr << "Failed to start game: no window" << std::endl;
-        return;
-    }
+        if (window == nullptr) {
+                std::cerr << "Failed to start game: no window" << std::endl;
+                return;
+        }
 
-    delta = 0;
-    pastTime = 0;
-	currentTime = 0;
+        delta = 0;
+        pastTime = 0;
+        currentTime = 0;
 
-	Entity::playArea = glm::vec2(1.0f, 0.7f);
-
-	restart();
-    mainLoop();
+        restart();
+        mainLoop();
 }
 
 void Game::updateDelta()
 {
-    currentTime = (float)glfwGetTime();
-    delta = currentTime - pastTime;
-	pastTime = currentTime;
-	
-	Entity::delta = delta;
+        currentTime = (float)glfwGetTime();
+        delta = currentTime - pastTime;
+        pastTime = currentTime;
+
+        Entity::delta = delta;
 }
 
 void Game::restart()
 {
-	Entity::SetAllDead();
-	Entity::ReapDeadEntities();
+        Entity::SetAllDead();
+        Entity::ReapDeadEntities();
 
-	Target::score = 0;
+        Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
+        mainCamera->pos = glm::vec3(2.0f);
+        mainCamera->LookAt(glm::vec3(0.f));
 
-	Ship* sp = new Ship();
+        Empty* empty = new Empty();
+}
 
-	std::mt19937 rnd(std::random_device{}());
-	std::uniform_real_distribution<float> dX(-Entity::playArea.x, Entity::playArea.x);
-	std::uniform_real_distribution<float> dY(-Entity::playArea.y, Entity::playArea.y);
+glm::mat4 model(1.f);
 
-	std::srand((int)(glfwGetTime() * 1000));
-	for (int i = 0; i < 20; i++) {
-		glm::vec2 pos(dX(rnd), dY(rnd));
+void Game::DrawAll()
+{
+        renderer->BindModelVBO();
 
-		if (glm::length(pos) > 0.1f)
-			new Target(pos);
-	}
+        model = glm::rotate(model, delta, glm::vec3(0.f, 1.f, 0.f));
+        glm::mat4 vp = mainCamera->GetMatrix();
 
-	if (sp->isDead) restart();
+	for (Entity* ent = Entity::GetHead(); ent != nullptr;
+		ent = ent->GetNext()) 
+        {
+                if (ent->modelActive != false && ent->visible) {
+                        renderer->DrawModel(ent->modelHandle, model, vp);
+                }
+        }
 }
 
 void Game::mainLoop()
 {	
-	float currentTime, pastTime;
-	while (!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
-	
-		updateDelta();
-	
-		int height, width;
-		glfwGetFramebufferSize(window, &width, &height);
-		float ratio = width / (float)height;	
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glEnable(GL_DEPTH_TEST);
 
-		Entity::playArea = glm::vec2(ratio, 1.0f);
+        float currentTime, pastTime;
+        while (!glfwWindowShouldClose(window)) {
+                glfwPollEvents();
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		glViewport(0, 0, width, height);		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-	
-		Entity::UpdateAll();
-	
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, GL_TRUE);
-	
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-			restart();
-	
-		
-		glfwSwapBuffers(window);
-		glfwSetWindowTitle(window, 
-			std::to_string(Target::score).c_str());
-	
-		}
+                updateDelta();
+
+                int height, width;
+                glfwGetFramebufferSize(window, &width, &height);
+                float ratio = width / (float)height;	
+
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glViewport(0, 0, width, height);		
+
+                Entity::UpdateAll();
+
+                DrawAll();
+
+                if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+                        glfwSetWindowShouldClose(window, GL_TRUE);
+
+                if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+                        restart();
+
+                glfwSwapBuffers(window);
+        }
 }

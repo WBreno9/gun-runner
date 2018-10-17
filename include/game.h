@@ -3,27 +3,34 @@
 
 #include <inc.h>
 #include <entity.h>
+#include <camera.h>
 #include <gutils.h>
-
-#include <ship.h>
-#include <target.h>
+#include <renderer.h>
 
 class Game 
 {
 public:
-    Game();
-    ~Game();
+        Game();
+        ~Game();
 
-    void createWindow(unsigned w, unsigned h);
+        void createWindow(unsigned w, unsigned h);
 
-    void start();
-    void restart();
+        void start();
+        void restart();
 private:
-    GLFWwindow* window;
-    float delta, currentTime, pastTime;
+        GLFWwindow* window;
+        unsigned width, height;
+        float delta, currentTime, pastTime;
 
-    void updateDelta();
-    void mainLoop();
+        Camera* mainCamera;
+        std::vector<Model*> models;
+
+        void DrawAll();
+
+        void updateDelta();
+        void mainLoop();
+
+        Renderer *renderer;
 };
 
 #endif
