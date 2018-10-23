@@ -33,3 +33,5 @@
 
 build/
 compile_commands.json
+deps/
+thirdparty/

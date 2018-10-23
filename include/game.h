@@ -4,10 +4,9 @@
 #include <inc.h>
 #include <entity.h>
 #include <camera.h>
-#include <gutils.h>
 #include <renderer.h>
 
-class Game 
+class Game
 {
 public:
         Game();

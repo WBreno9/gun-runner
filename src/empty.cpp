@@ -3,7 +3,7 @@
 Empty::Empty()
 {
         visible = true;
-        SetModel("building");
+        SetModel("error");
 }
 
 Empty::~Empty()

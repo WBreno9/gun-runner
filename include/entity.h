@@ -2,7 +2,6 @@
 #define ENTITY_H
 
 #include <inc.h>
-#include <gutils.h>
 #include <renderer.h>
 
 #include <map>
@@ -12,7 +11,7 @@ class Entity
 public:
 	static GLFWwindow* window;
 	static float delta;
-	
+
 	bool isDead;
 	float lifeTime;
 
@@ -74,8 +73,8 @@ private:
 	Entity* next;
 
 	static Entity* tail;
-	static Entity* head;  
-	
+	static Entity* head;
+
 	void DrawBoundingBox();
 	static void DrawPlayArea();
 };

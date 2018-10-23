@@ -2,7 +2,7 @@
 
 Renderer::Renderer()
 {
-        modelBuffer.shader = GLSLShaderProgram("geometry.vert", "geometry.frag");
+        modelBuffer.shader = GLSLShaderProgram("data/shaders/geometry.vert", "data/shaders/geometry.frag");
         LoadAllModels();
         CreateModelsVBO();
 }
@@ -24,7 +24,7 @@ void Renderer::LoadModel(const std::string &modelName)
 {
         std::clog << "  Model: " + modelName << std::endl;
 
-        std::string fileName = modelName + ".fbx";
+        std::string fileName = "data/models/" + modelName + ".fbx";
         Model model(fileName);
         models.push_back(model);
 
