@@ -1,22 +1,25 @@
 #version 330 core
 
-in vec3 position;
-in vec3 texcoord;
-in vec3 normal;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texcoord;
 
-out vec3 Normal;
-out vec3 Texcoord;
 out vec3 Position;
+out vec2 Texcoord;
+out vec3 Normal;
 
-uniform mat4 m;
-uniform mat4 vp;
+layout(std140) uniform matrixBlock {
+        mat4 model;
+        mat4 view;
+        mat4 projection;
+}matrices;
 
 void main(void)
 {
-        Normal = (m * vec4(normal, 0.0f)).xyz;
-        Position = (m * vec4(position, 1.0f)).xyz;
+        Normal = (matrices.model * vec4(normal, 0.0f)).xyz;
+        Position = (matrices.model * vec4(position, 1.0f)).xyz;
         Texcoord = texcoord;
 
-        mat4 mvp = vp*m;
+        mat4 mvp = matrices.projection * matrices.view * matrices.model;
         gl_Position = mvp*vec4(position, 1.0f);
 }

@@ -11,8 +11,8 @@ Camera::Camera(float f, float ar, float np, float fp) :
                 return;
         }
 
-        pos = glm::vec3(0.f);
-        forward = glm::vec3(0.f, 0.f, 1.0f);
+        transform.pos = glm::vec3(0.f);
+        transform.forward = glm::vec3(0.f, 0.f, 1.0f);
 }
 
 Camera::~Camera()
@@ -21,16 +21,23 @@ Camera::~Camera()
 
 void Camera::Update()
 {
-        view = glm::lookAt(pos, forward + pos, glm::vec3(0.f, 1.f, 0.f));
+        view = glm::lookAt(transform.pos, 
+                        transform.forward + transform.pos, 
+                        glm::vec3(0.f, 1.f, 0.f));
         proj = glm::perspective(fov, aspectRatio, near, far);
 }
 
 void Camera::LookAt(const glm::vec3& f)
 {
-        forward = glm::normalize(f - pos);
+        transform.forward = glm::normalize(f - transform.pos);
 }
 
-const glm::mat4 Camera::GetMatrix()
+const glm::mat4 Camera::GetViewMatrix()
 {
-        return proj*view;
+        return view;
+}
+
+const glm::mat4 Camera::GetProjMatrix()
+{
+        return proj;
 }

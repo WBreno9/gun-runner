@@ -1,5 +1,6 @@
 #include <game.h>
 #include <empty.h>
+#include <light.h>
 
 static void error_callback(int error, const char* desc)
 {
@@ -63,7 +64,7 @@ void Game::createWindow(unsigned w, unsigned h)
         height = h;
 
         renderer = new Renderer();
-        Entity::modelMap = renderer->GetModelMap();
+        Entity::m_renderer = renderer;
 }
 
 void Game::start()
@@ -96,26 +97,37 @@ void Game::restart()
         Entity::ReapDeadEntities();
 
         Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
-        mainCamera->pos = glm::vec3(2.0f);
+        mainCamera->transform.pos = glm::vec3(2.0f);
         mainCamera->LookAt(glm::vec3(0.f));
 
         Empty* empty = new Empty();
+        
+        ELight* light = new ELight();
+        light->transform.pos = glm::vec3(1.0f);
+        light->lifeTime = 1.0f;
+        light->setColor(glm::vec3(0.f, 0.f, 1.f));
+
+        ELight* light1 = new ELight();
+        light1->transform.pos = glm::vec3(1.0f, 1.f, -1.f);
+        light1->lifeTime = 2.0f;
+        light1->setColor(glm::vec3(1.f, 0.f, 0.f));
 }
 
 glm::mat4 model(1.f);
 
 void Game::DrawAll()
 {
-        renderer->BindModelVBO();
+        renderer->bindModelVBO();
 
         model = glm::rotate(model, delta, glm::vec3(0.f, 1.f, 0.f));
-        glm::mat4 vp = mainCamera->GetMatrix();
+        glm::mat4 v = mainCamera->GetViewMatrix();
+        glm::mat4 p = mainCamera->GetProjMatrix();
 
 	for (Entity* ent = Entity::GetHead(); ent != nullptr;
 		ent = ent->GetNext()) 
         {
                 if (ent->modelActive != false && ent->visible) {
-                        renderer->DrawModel(ent->modelHandle, model, vp);
+                        renderer->drawModel(ent->modelHandle, model, v, p);
                 }
         }
 }
@@ -140,6 +152,8 @@ void Game::mainLoop()
 
                 Entity::UpdateAll();
 
+                renderer->destroyInactiveLights();
+                renderer->updateLights();
                 DrawAll();
 
                 if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

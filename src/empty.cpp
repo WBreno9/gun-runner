@@ -3,7 +3,8 @@
 Empty::Empty()
 {
         visible = true;
-        SetModel("error");
+        modelHandle = m_renderer->findModel("error");
+        modelActive = true;
 }
 
 Empty::~Empty()

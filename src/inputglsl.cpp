@@ -73,6 +73,7 @@ GLuint GLSLShaderProgram(std::string vertFile, std::string fragFile)
         glAttachShader(shaderProgram, vertShader);
         glAttachShader(shaderProgram, fragShader);
         glBindFragDataLocation(shaderProgram, 0, "outColor");
+
         glLinkProgram(shaderProgram);
 
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);

@@ -5,38 +5,13 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCES include/inc.h
         src/main.cpp src/entity.cpp src/game.cpp
-         include/entity.h include/game.h
+        include/entity.h include/game.h
         src/camera.cpp include/camera.h
         src/inputglsl.cpp include/inputglsl.h
         src/renderer.cpp include/renderer.h
         src/model.cpp include/model.h
-        src/empty.cpp include/empty.h)
-
-if(EXPERIMENTAL_BUILD)
-        configure_file(${CMAKE_SOURCE_DIR}/thirdparty/glfw.cmake glfw-download/CMakeLists.txt)
-
-        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/glfw-download")
-
-        add_subdirectory(${CMAKE_BINARY_DIR}/glfw-download/)
-
-        configure_file(${CMAKE_SOURCE_DIR}/thirdparty/assimp.cmake assimp-download/CMakeLists.txt)
-
-        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/assimp-download")
-
-        add_subdirectory(${CMAKE_BINARY_DIR}/assimp-download/)
-
-        set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-        set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-        set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-
-        set(ZLIB_LIBRARIES zlibstatic)
-        set(ENABLE_BOOST_WORKAROUND ON)
-        set(BUILD_STATIC_LIB ON)
-        set(BUILD_ASSIMP_TOOLS  ON)
-        set(ASSIMP_BUILD_STATIC_LIB ON)
-endif()
+        src/empty.cpp include/empty.h
+        src/light.cpp include/light.h)
 
 set(DEPS_ROOT "" CACHE PATH "Dependencies directory")
 set(USE_INSTALLED_LIBS ON CACHE BOOL "Use installed dependencies")

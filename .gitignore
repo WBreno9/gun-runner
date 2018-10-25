@@ -31,7 +31,11 @@
 *.out
 *.app
 
+gun_runner
+
 build/
 compile_commands.json
 deps/
 thirdparty/
+
+.vscode/

@@ -15,7 +15,8 @@ public:
 
         void LookAt(const glm::vec3& f);
 
-        const glm::mat4 GetMatrix(); 
+        const glm::mat4 GetViewMatrix(); 
+        const glm::mat4 GetProjMatrix(); 
 private:
         float fov;
         float aspectRatio;

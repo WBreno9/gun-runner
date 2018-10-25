@@ -6,37 +6,40 @@
 
 #include <map>
 
-class Entity
-{
+struct Transform {
+	glm::vec3 pos;
+	glm::vec3 forward;
+	glm::vec3 rotation;
+	glm::vec3 scale;
+
+	void setIndentity() {
+		pos = glm::vec3(0.f);
+		forward = glm::vec3(0.f, 0.f, -1.f);
+		rotation = glm::vec3(0.f);
+		scale = glm::vec3(1.f);
+	}
+};
+
+class Entity {
 public:
 	static GLFWwindow* window;
 	static float delta;
 
+	static Renderer* m_renderer;
+
 	bool isDead;
 	float lifeTime;
+	float lifeTimeCount;
 
 	int health;
 	int maxHealth;
 
 	bool visible;
 
-        bool modelActive;
-        ModelHandle modelHandle;
-        void SetModel(const std::string &modelName);
-        static const std::map<std::string, ModelHandle> *modelMap;
+	bool modelActive;
+	ModelHandle modelHandle;
 
-        /* TODO */
-        /* Create a transform class */
-	glm::vec3 pos;
-	glm::vec3 forward;
-        glm::vec3 rotation;
-        glm::vec3 scale;
-
-	float DeAccelMul;
-	glm::vec3 accelDir;
-
-	glm::vec3 BBoxMax;
-	glm::vec3 BBoxMin;
+	Transform transform;
 
 	Entity();
 	virtual ~Entity();
@@ -62,21 +65,12 @@ public:
 
  	Entity* GetNext() { return next; }
 	Entity* GetPrev() { return prev; }
-
 private:
-	float realRotation;
-
-	float lifeTimeCount;
-	glm::mat4 model_matrix;
-
 	Entity* prev;
 	Entity* next;
 
 	static Entity* tail;
 	static Entity* head;
-
-	void DrawBoundingBox();
-	static void DrawPlayArea();
 };
 
 #endif
