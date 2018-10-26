@@ -152,7 +152,7 @@ void Game::mainLoop()
 
                 Entity::UpdateAll();
 
-                renderer->destroyInactiveLights();
+                //renderer->destroyInactiveLights();
                 renderer->updateLights();
                 DrawAll();
 

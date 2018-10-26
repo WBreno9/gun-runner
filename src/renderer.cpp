@@ -184,7 +184,7 @@ void Renderer::loadAllModels() {
         loadModel("error");
         loadModel("test");
         loadModel("building");
-
+        loadModel("nanosuit/nanosuit");
 }
 
 void Renderer::loadModel(const std::string &modelName) {
@@ -199,6 +199,7 @@ void Renderer::loadModel(const std::string &modelName) {
 
 void Renderer::createModelsVBO() {
         std::vector<Vertex> allVertices;
+        std::vector<Texture> allTextures;
         std::vector<GLushort> allIndices;
 
         size_t meshCount = 0;
@@ -211,7 +212,7 @@ void Renderer::createModelsVBO() {
 
                         allVertices.insert(allVertices.end(), mesh.vertices.begin(), mesh.vertices.end());
                         allIndices.insert(allIndices.end(), mesh.indices.begin(), mesh.indices.end());
-
+                        allTextures.insert(allTextures.end(), mesh.textures.begin(), mesh.textures.end());
                         meshCount++;
                 }
         }
@@ -220,7 +221,8 @@ void Renderer::createModelsVBO() {
                   << meshCount << std::endl;
 
         std::clog << "Models total vertex count: " << allVertices.size() << "\n"
-                  << "Models total indices count: " << allIndices.size()
+                  << "Models total indices count: " << allIndices.size() << "\n"
+                  << "Textures loaded: " << allTextures.size()
                   << std::endl;
 
         m_modelBuffer.addAttrib(RVertexAttrib("position", sizeof(GLfloat), 3, GL_FLOAT));
