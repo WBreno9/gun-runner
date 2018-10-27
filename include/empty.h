@@ -3,6 +3,7 @@
 
 #include <entity.h>
 
+
 class Empty : public Entity
 {
 public:
@@ -12,7 +13,6 @@ public:
 	std::string GetTypeString() { return "Empty"; }
 
 	void Update();
-private:
 };
 
 #endif

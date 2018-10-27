@@ -21,10 +21,12 @@ private:
         unsigned width, height;
         float delta, currentTime, pastTime;
 
-        Camera* mainCamera;
+        //Camera* mainCamera;
+        Camera* playerCam;
         std::vector<Model*> models;
 
         void DrawAll();
+        void DrawAll(glm::mat4 v, glm::mat4 p);
 
         void updateDelta();
         void mainLoop();

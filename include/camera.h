@@ -13,6 +13,12 @@ public:
 
         void Update();
 
+        void LockCamera();
+        void MoveCamera(float distance, float direction);
+        void MoveCameraUp(float, float);
+        void Control(float moveVelocity, float mouseVelocity, bool mouseIn, GLFWwindow* window, int width, int height);
+        void UpdateCamera();
+
         void LookAt(const glm::vec3& f);
 
         const glm::mat4 GetViewMatrix(); 

@@ -9,7 +9,8 @@ static void error_callback(int error, const char* desc)
 
 Game::Game() {
         window = nullptr;
-        mainCamera = nullptr;
+        //mainCamera = nullptr;
+        playerCam = nullptr;
 }
 
 Game::~Game() {
@@ -96,9 +97,12 @@ void Game::restart()
         Entity::SetAllDead();
         Entity::ReapDeadEntities();
 
-        Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
-        mainCamera->transform.pos = glm::vec3(2.0f);
-        mainCamera->LookAt(glm::vec3(0.f));
+        Game::playerCam = new Camera(90.0f, (float)width/height, 0.1f, 100.0f);
+        playerCam->transform.pos = glm::vec3(2.0f);
+        playerCam->LookAt(glm::vec3(0.0f));
+        //Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
+        //mainCamera->transform.pos = glm::vec3(2.0f);
+        //mainCamera->LookAt(glm::vec3(0.f));
 
         Empty* empty = new Empty();
         
@@ -111,6 +115,8 @@ void Game::restart()
         light1->transform.pos = glm::vec3(1.0f, 1.f, -1.f);
         light1->lifeTime = 2.0f;
         light1->setColor(glm::vec3(1.f, 0.f, 0.f));
+
+        //renderer->loadModel("building");
 }
 
 glm::mat4 model(1.f);
@@ -120,8 +126,10 @@ void Game::DrawAll()
         renderer->bindModelVBO();
 
         model = glm::rotate(model, delta, glm::vec3(0.f, 1.f, 0.f));
-        glm::mat4 v = mainCamera->GetViewMatrix();
-        glm::mat4 p = mainCamera->GetProjMatrix();
+        //glm::mat4 v = mainCamera->GetViewMatrix();
+        //glm::mat4 p = mainCamera->GetProjMatrix();
+        glm::mat4 v = playerCam->GetViewMatrix();
+        glm::mat4 p = playerCam->GetProjMatrix();
 
 	for (Entity* ent = Entity::GetHead(); ent != nullptr;
 		ent = ent->GetNext()) 
@@ -138,6 +146,9 @@ void Game::mainLoop()
         glEnable(GL_DEPTH_TEST);
 
         float currentTime, pastTime;
+
+        //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         while (!glfwWindowShouldClose(window)) {
                 glfwPollEvents();
 
@@ -148,12 +159,18 @@ void Game::mainLoop()
                 float ratio = width / (float)height;	
 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glViewport(0, 0, width, height);		
+                glViewport(0, 0, width, height);
+
+                glLoadIdentity();
+
+                playerCam->Control(1.2f, 1.2f, true, window, width, height);
+                playerCam->UpdateCamera();
 
                 Entity::UpdateAll();
 
                 //renderer->destroyInactiveLights();
                 renderer->updateLights();
+
                 DrawAll();
 
                 if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
