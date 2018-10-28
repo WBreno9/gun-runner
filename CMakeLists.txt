@@ -30,19 +30,25 @@ if(NOT USE_INSTALLED_LIBS)
         set(ASSIMP_BUILD_STATIC_LIB ON)
                 
         add_subdirectory("${DEPS_ROOT}/assimp-3.3.1")
+
+	add_subdirectory("${DEPS_ROOT}/bullet3")
                 
         include_directories(
                 "${DEPS_ROOT}/glew-2.1.0/include"
                 "${DEPS_ROOT}/glm"
                 "${DEPS_ROOT}/glfw-3.2.1/include"
                 "${DEPS_ROOT}/assimp-3.3.1/include"
+		"${DEPS_ROOT}/bullet3/src"
                 )
                 
         set(GLEW_INCLUDE_DIRS "${DEPS_ROOT}/glew-2.1.0/include")
         set(GLEW_LIBRARIES "${DEPS_ROOT}/glew-2.1.0/lib/Release/x64/glew32.lib")
+
+	set(BULLET_ROOT "${DEPS_ROOT}/bullet3/build3")
 else()
         find_package(glfw3 REQUIRED)
         find_package(GLEW REQUIRED)
+	find_package(Bullet REQUIRED)
 endif()
 
 set(OpenGL_GL_PREFERENCE GLVND)
@@ -59,6 +65,8 @@ include_directories(
 
 add_executable(gun_runner ${SOURCES})
 set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}")
+set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}")
 target_link_libraries(
         gun_runner
         ${OPENGL_LIBRARIES}

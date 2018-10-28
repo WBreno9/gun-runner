@@ -19,11 +19,18 @@ struct Vertex {
         glm::vec2 texture;
 };
 
+struct Texture {
+    unsigned int id;
+    std::string type;
+    std::string path;
+};
+
 struct Mesh {
         std::vector<Vertex> vertices;
         std::vector<GLushort> indices;
 
         std::string textureName;
+        std::vector<Texture> textures;
 
         GLuint indexOffset;
         GLuint vertOffset;
@@ -41,8 +48,13 @@ public:
 private:
         std::string name;
         std::string path;
-
+        std::string texturePath;
+        
         std::vector<Mesh> meshes;
+        std::vector<Texture> textures_loaded;
+
+        std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+        unsigned int TextureFromFile(const char *path, const std::string &directory);
 };
 
 #endif
