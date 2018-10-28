@@ -31,6 +31,9 @@
 *.out
 *.app
 
+*.pdb
+*.ilk
+
 gun_runner
 
 build/

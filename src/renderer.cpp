@@ -199,7 +199,6 @@ void Renderer::loadModel(const std::string &modelName) {
 
 void Renderer::createModelsVBO() {
         std::vector<Vertex> allVertices;
-        std::vector<Texture> allTextures;
         std::vector<GLushort> allIndices;
 
         size_t meshCount = 0;
@@ -212,7 +211,6 @@ void Renderer::createModelsVBO() {
 
                         allVertices.insert(allVertices.end(), mesh.vertices.begin(), mesh.vertices.end());
                         allIndices.insert(allIndices.end(), mesh.indices.begin(), mesh.indices.end());
-                        allTextures.insert(allTextures.end(), mesh.textures.begin(), mesh.textures.end());
                         meshCount++;
                 }
         }
@@ -222,7 +220,6 @@ void Renderer::createModelsVBO() {
 
         std::clog << "Models total vertex count: " << allVertices.size() << "\n"
                   << "Models total indices count: " << allIndices.size() << "\n"
-                  << "Textures loaded: " << allTextures.size()
                   << std::endl;
 
         m_modelBuffer.addAttrib(RVertexAttrib("position", sizeof(GLfloat), 3, GL_FLOAT));
@@ -230,7 +227,7 @@ void Renderer::createModelsVBO() {
         m_modelBuffer.addAttrib(RVertexAttrib("texcoord", sizeof(GLfloat), 2, GL_FLOAT));
 
         m_modelBuffer.setup(&allVertices[0], allVertices.size()*sizeof(Vertex), 
-                        &allIndices[0], allIndices.size()*sizeof(GLushort));
+						&allIndices[0], allIndices.size()*sizeof(GLushort));
 }
 
 ModelHandle Renderer::findModel(const std::string &modelName) {
@@ -293,9 +290,12 @@ void Renderer::destroyInactiveLights() {
                         m_lights.erase(tmp);
                         unsigned numLights = m_lights.size();
                         m_lightsBuffer.update(0, sizeof(GLint), &numLights);
-                }
 
-                it++;
+			if (it == m_lights.end()) 
+				break;
+		} else {
+			it++;
+		}
         }
 }
 
