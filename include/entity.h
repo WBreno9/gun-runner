@@ -18,6 +18,15 @@ struct Transform {
 		rotation = glm::vec3(0.f);
 		scale = glm::vec3(1.f);
 	}
+
+	glm::mat4 getMatrix() {
+		glm::mat4 translation = glm::translate(pos);
+		glm::mat4 rotationX = glm::rotate(rotation.x, glm::vec3(1.f, 0.f, 0.f));
+		glm::mat4 rotationY = glm::rotate(rotation.y, glm::vec3(0.f, 1.f, 0.f));
+		glm::mat4 rotationZ = glm::rotate(rotation.z, glm::vec3(0.f, 0.f, 1.f));
+
+		return (rotationX*rotationY*rotationZ) * translation;
+	}
 };
 
 class Entity {

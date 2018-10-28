@@ -91,6 +91,7 @@ void Game::updateDelta()
         Entity::delta = delta;
 }
 
+Empty* empty;
 void Game::restart()
 {
         Entity::SetAllDead();
@@ -100,7 +101,7 @@ void Game::restart()
         mainCamera->transform.pos = glm::vec3(2.0f);
         mainCamera->LookAt(glm::vec3(0.f));
 
-        Empty* empty = new Empty();
+        empty = new Empty();
         
         ELight* light = new ELight();
         light->transform.pos = glm::vec3(1.0f);
@@ -113,21 +114,21 @@ void Game::restart()
         light1->setColor(glm::vec3(1.f, 0.f, 0.f));
 }
 
-glm::mat4 model(1.f);
-
 void Game::DrawAll()
 {
         renderer->bindModelVBO();
 
-        model = glm::rotate(model, delta, glm::vec3(0.f, 1.f, 0.f));
         glm::mat4 v = mainCamera->GetViewMatrix();
         glm::mat4 p = mainCamera->GetProjMatrix();
+
+        empty->transform.rotation += glm::vec3(0.f, delta, 0.f);
 
 	for (Entity* ent = Entity::GetHead(); ent != nullptr;
 		ent = ent->GetNext()) 
         {
+                glm::mat4 m = ent->transform.getMatrix();
                 if (ent->modelActive != false && ent->visible) {
-                        renderer->drawModel(ent->modelHandle, model, v, p);
+                        renderer->drawModel(ent->modelHandle, m, v, p);
                 }
         }
 }

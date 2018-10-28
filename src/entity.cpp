@@ -15,6 +15,8 @@ Entity::Entity()
         modelActive = false;
         modelHandle = 0;
 
+	transform.setIndentity();
+
 	if (head == nullptr) {
 		tail = head = this;
 		next = prev = nullptr;
