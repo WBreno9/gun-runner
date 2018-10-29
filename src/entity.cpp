@@ -5,6 +5,7 @@ Entity* Entity::head = nullptr;
 GLFWwindow* Entity::window = nullptr;
 float Entity::delta = 0;
 Renderer* Entity::m_renderer = nullptr;
+PhysicsManager* Entity::m_physics = nullptr;
 
 Entity::Entity() 
 {

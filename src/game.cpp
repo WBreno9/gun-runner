@@ -3,6 +3,7 @@
 #include <light.h>
 #include <player.h>
 #include <map.h>
+#include <box.h>
 
 static void error_callback(int error, const char* desc)
 {
@@ -69,6 +70,9 @@ void Game::createWindow(unsigned w, unsigned h)
 
         renderer = new Renderer();
         Entity::m_renderer = renderer;
+
+        physics = new PhysicsManager();
+        Entity::m_physics = physics;
 }
 
 void Game::start()
@@ -109,11 +113,22 @@ void Game::restart()
         EPlayer* player = new EPlayer(Game::mainCamera);
         player->transform.translate(glm::vec3(0.f, 1.f, 0.f), Transform::WORLD_RELATIVE);
 
-        EMap* map = new EMap("test_map");
+        //EMap* map = new EMap("test_map");
+
+        EBox* box = new EBox(1.f, 0.01f);
+        box->transform.translate(glm::vec3(-1.f, 1.f, 0.f), Transform::WORLD_RELATIVE);
+
+        EBox* box1 = new EBox(10.f, 0.f);
+        box1->transform.translate(glm::vec3(0.f, -4.f, 0.f), Transform::WORLD_RELATIVE);
         
         ELight* light = new ELight();
-        light->transform.m_pos =  glm::vec3(0.f, 7.f, 0.f);
-        light->setColor(glm::vec3(30.f));
+        light->transform.m_pos =  glm::vec3(5.f, 7.f, 5.f);
+        light->setColor(glm::vec3(20.f));
+        //light->lifeTime = 2.0f;
+
+        //ELight* light1 = new ELight();
+        //light1->transform.m_pos =  glm::vec3(-5.f, 3.f, 0.f);
+        //light1->setColor(glm::vec3(15.f));
 
 }
 
@@ -150,7 +165,11 @@ void Game::mainLoop()
                 float ratio = width / (float)height;	
 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                glViewport(0, 0, width, height);		
+                glViewport(0, 0, width, height);
+
+                physics->destroyInactiveRigidBodies();	
+                physics->step();	
+                physics->updateTransforms();
 
                 Entity::UpdateAll();
 

@@ -16,6 +16,8 @@ set(SOURCES
         src/player.cpp
         src/map.cpp
         src/transform.cpp
+        src/physics.cpp
+        src/box.cpp
         )
 
 set(DEPS_ROOT "" CACHE PATH "Dependencies directory")

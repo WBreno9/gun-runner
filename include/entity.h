@@ -4,6 +4,7 @@
 #include <inc.h>
 #include <renderer.h>
 #include <transform.h>
+#include <physics.h>
 
 #include <map>
 
@@ -13,6 +14,7 @@ public:
 	static float delta;
 
 	static Renderer* m_renderer;
+	static PhysicsManager* m_physics;
 
 	bool isDead;
 	float lifeTime;
@@ -28,8 +30,7 @@ public:
 
 	Transform transform;
 
-	btRigidBody* rigidBody;
-	bool rigidBodyActive;
+	PRigidBody* rigidBody;
 
 	Entity();
 	virtual ~Entity();

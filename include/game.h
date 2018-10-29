@@ -5,6 +5,7 @@
 #include <entity.h>
 #include <camera.h>
 #include <renderer.h>
+#include <physics.h>
 
 class Game
 {
@@ -30,6 +31,7 @@ private:
         void mainLoop();
 
         Renderer *renderer;
+        PhysicsManager *physics;
 };
 
 #endif

@@ -172,7 +172,7 @@ Renderer::Renderer() :
         m_defaultModelShader.addUniformBuffer(&m_matricesBuffer);
         m_defaultModelShader.addUniformBuffer(&m_lightsBuffer);
 
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
 
         loadAllModels();
         createModelsVBO();
@@ -185,6 +185,7 @@ void Renderer::loadAllModels() {
         std::clog << "Loading models" << std::endl;
         loadModel("error");
         loadModel("test_map");
+        loadModel("box");
         //loadModel("nanosuit/nanosuit");
 }
 
