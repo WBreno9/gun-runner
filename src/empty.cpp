@@ -13,4 +13,5 @@ Empty::~Empty()
 
 void Empty::Update()
 {
+        transform.rotate(glm::vec3(0.f, delta, 0.f), Transform::WORLD_RELATIVE);
 }

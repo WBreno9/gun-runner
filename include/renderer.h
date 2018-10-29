@@ -9,6 +9,8 @@
 #include <vector>
 #include <list>
 
+typedef uint32_t RModelHandle;
+
 struct RVertexAttrib {
         std::string m_name;
         GLuint m_location;
@@ -102,20 +104,20 @@ public:
 
         void loadAllModels();
         void loadModel(const std::string &name);
-        ModelHandle findModel(const std::string &modelName);
+        RModelHandle findModel(const std::string &modelName);
         void createModelsVBO();
 
-        const std::map<std::string, ModelHandle>* getModelMap();
+        const std::map<std::string, RModelHandle>* getModelMap();
 
         void bindModelVBO();
 
-        void drawModel(ModelHandle modelHandle, const glm::mat4 &m, const glm::mat4 &v, const glm::mat4 &p);
+        void drawModel(RModelHandle modelHandle, const glm::mat4 &m, const glm::mat4 &v, const glm::mat4 &p);
 
         RLight* addLight(RLight light);
         void updateLights();
         void destroyInactiveLights();
 private:
-        std::map<std::string, ModelHandle> m_modelMap;
+        std::map<std::string, RModelHandle> m_modelMap;
         std::vector<Model> m_models;
 
         RVertexBuffer m_modelBuffer;

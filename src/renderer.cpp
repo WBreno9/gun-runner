@@ -172,6 +172,8 @@ Renderer::Renderer() :
         m_defaultModelShader.addUniformBuffer(&m_matricesBuffer);
         m_defaultModelShader.addUniformBuffer(&m_lightsBuffer);
 
+        glEnable(GL_CULL_FACE);
+
         loadAllModels();
         createModelsVBO();
 }
@@ -182,9 +184,8 @@ Renderer::~Renderer() {
 void Renderer::loadAllModels() {
         std::clog << "Loading models" << std::endl;
         loadModel("error");
-        loadModel("test");
-        loadModel("building");
-        loadModel("nanosuit/nanosuit");
+        loadModel("test_map");
+        //loadModel("nanosuit/nanosuit");
 }
 
 void Renderer::loadModel(const std::string &modelName) {
@@ -230,7 +231,7 @@ void Renderer::createModelsVBO() {
 						&allIndices[0], allIndices.size()*sizeof(GLushort));
 }
 
-ModelHandle Renderer::findModel(const std::string &modelName) {
+RModelHandle Renderer::findModel(const std::string &modelName) {
         auto result = m_modelMap.find(modelName);
         if (result != m_modelMap.end()) {
                 return result->second;
@@ -241,7 +242,7 @@ ModelHandle Renderer::findModel(const std::string &modelName) {
         }
 }
 
-const std::map<std::string, ModelHandle>* Renderer::getModelMap() {
+const std::map<std::string, RModelHandle>* Renderer::getModelMap() {
                 return &m_modelMap;
 }
 
@@ -250,7 +251,7 @@ void Renderer::bindModelVBO() {
         m_defaultModelShader.bind();
 }
 
-void Renderer::drawModel(ModelHandle modelHandle, const glm::mat4 &m, const glm::mat4 &v, const glm::mat4 &p)
+void Renderer::drawModel(RModelHandle modelHandle, const glm::mat4 &m, const glm::mat4 &v, const glm::mat4 &p)
 {
         auto model = m_models[modelHandle];
         auto meshes = model.GetMeshes();

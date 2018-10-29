@@ -9,11 +9,9 @@ ELight::~ELight() {
 }
 
 void ELight::Update() {
-        m_light->m_pos = transform.pos;
-        m_light->m_modified = true;
+        m_light->setPos(transform.m_pos);
 }
 
 void ELight::setColor(glm::vec3 color) {
-        m_light->m_color = color;
-        m_light->m_modified = true;
+        m_light->setColor(color);
 }

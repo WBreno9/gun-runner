@@ -107,11 +107,11 @@ Entity* Entity::FindNearestByType(std::string arg)
 	{
 		if (ent->GetTypeString() == arg) {
 			if (dist < 0.0f) {
-				dist = glm::distance(transform.pos, ent->transform.pos);
+				dist = glm::distance(transform.m_pos, ent->transform.m_pos);
 				nearest = ent;
 			}
 
-			if ((tmp = glm::distance(transform.pos, ent->transform.pos)) < dist) {
+			if ((tmp = glm::distance(transform.m_pos, ent->transform.m_pos)) < dist) {
 				dist = tmp;
 				nearest = ent;
 			}

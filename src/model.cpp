@@ -12,7 +12,7 @@ std::string Model::GetPath() {
 }
 
 bool Model::LoadModel(const std::string &file_name) {
-    this->path = file_name;
+    path = file_name;
 
     std::ifstream fin(file_name.c_str() );
 
@@ -87,6 +87,7 @@ std::vector<Mesh>* Model::GetMeshes() {
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
     std::vector<Texture> textures;
+
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++){
         aiString str;
         mat->GetTexture(type, i, &str);

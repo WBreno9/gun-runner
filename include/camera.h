@@ -11,8 +11,9 @@ public:
 
         std::string GetTypeString() { return "Camera"; }
 
-        void Update();
+        virtual void Update();
 
+        void updateMatrices();
         void LookAt(const glm::vec3& f);
 
         const glm::mat4 GetViewMatrix(); 

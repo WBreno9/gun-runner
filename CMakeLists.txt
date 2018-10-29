@@ -3,15 +3,20 @@ project(gun_runner)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCES include/inc.h
-        src/main.cpp src/entity.cpp src/game.cpp
-        include/entity.h include/game.h
-        src/camera.cpp include/camera.h
-        src/inputglsl.cpp include/inputglsl.h
-        src/renderer.cpp include/renderer.h
-        src/model.cpp include/model.h
-        src/empty.cpp include/empty.h
-        src/light.cpp include/light.h)
+set(SOURCES
+        src/main.cpp 
+        src/entity.cpp 
+        src/game.cpp
+        src/camera.cpp
+        src/inputglsl.cpp
+        src/renderer.cpp
+        src/model.cpp
+        src/empty.cpp
+        src/light.cpp
+        src/player.cpp
+        src/map.cpp
+        src/transform.cpp
+        )
 
 set(DEPS_ROOT "" CACHE PATH "Dependencies directory")
 set(USE_INSTALLED_LIBS ON CACHE BOOL "Use installed dependencies")
@@ -61,16 +66,21 @@ include_directories(
         ${GLFW_INCLUDE_DIRS}
 	${GLM_INCLUDE_DIRS}
         ${ASSIMP_INCLUDE_DIRS}
+        ${BULLET_INCLUDE_DIRS}
         )
 
 add_executable(gun_runner ${SOURCES})
 set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
 set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}")
 set_target_properties(gun_runner PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}")
+
+target_include_directories(gun_runner PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
 target_link_libraries(
         gun_runner
         ${OPENGL_LIBRARIES}
         ${GLEW_LIBRARIES}
+        ${BULLET_LIBRARIES}
         glfw
         assimp
 	)

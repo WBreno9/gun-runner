@@ -1,6 +1,8 @@
 #include <game.h>
 #include <empty.h>
 #include <light.h>
+#include <player.h>
+#include <map.h>
 
 static void error_callback(int error, const char* desc)
 {
@@ -43,7 +45,7 @@ void Game::createWindow(unsigned w, unsigned h)
         glfwMakeContextCurrent(window);
         glfwSetErrorCallback(error_callback);
 
-        glfwSwapInterval(0);
+        glfwSwapInterval(1);
 
         std::clog << "Intializing GLEW" << std::endl;
         glewExperimental = GL_TRUE;
@@ -62,6 +64,8 @@ void Game::createWindow(unsigned w, unsigned h)
 
         width = w;
         height = h;
+
+        Entity::window = window;
 
         renderer = new Renderer();
         Entity::m_renderer = renderer;
@@ -91,27 +95,26 @@ void Game::updateDelta()
         Entity::delta = delta;
 }
 
-Empty* empty;
 void Game::restart()
 {
         Entity::SetAllDead();
         Entity::ReapDeadEntities();
 
+        glfwSetCursorPos(Entity::window, width/2, height/2);
+
         Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
-        mainCamera->transform.pos = glm::vec3(2.0f);
+        mainCamera->transform.translate(glm::vec3(1.f), Transform::WORLD_RELATIVE);
         mainCamera->LookAt(glm::vec3(0.f));
 
-        empty = new Empty();
+        EPlayer* player = new EPlayer(Game::mainCamera);
+        player->transform.translate(glm::vec3(0.f, 1.f, 0.f), Transform::WORLD_RELATIVE);
+
+        EMap* map = new EMap("test_map");
         
         ELight* light = new ELight();
-        light->transform.pos = glm::vec3(1.0f);
-        light->lifeTime = 1.0f;
-        light->setColor(glm::vec3(0.f, 0.f, 1.f));
+        light->transform.m_pos =  glm::vec3(0.f, 7.f, 0.f);
+        light->setColor(glm::vec3(30.f));
 
-        ELight* light1 = new ELight();
-        light1->transform.pos = glm::vec3(1.0f, 1.f, -1.f);
-        light1->lifeTime = 2.0f;
-        light1->setColor(glm::vec3(1.f, 0.f, 0.f));
 }
 
 void Game::DrawAll()
@@ -120,8 +123,6 @@ void Game::DrawAll()
 
         glm::mat4 v = mainCamera->GetViewMatrix();
         glm::mat4 p = mainCamera->GetProjMatrix();
-
-        empty->transform.rotation += glm::vec3(0.f, delta, 0.f);
 
 	for (Entity* ent = Entity::GetHead(); ent != nullptr;
 		ent = ent->GetNext()) 
