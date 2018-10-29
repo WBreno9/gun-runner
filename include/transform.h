@@ -26,6 +26,7 @@ struct Transform {
 	void scale(glm::vec3 scale, int relativeTo);
 
 	glm::mat4 getMatrix();
+	glm::vec3 getForward();
 };
 
 #endif
