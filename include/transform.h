@@ -14,12 +14,18 @@ struct Transform {
 
 	glm::quat m_orientation;
 
+	bool m_modified = false;
+
 	enum {
 		WORLD_RELATIVE,
 		SELF_RELATIVE
 	};
 
 	void setIndentity();
+
+	void setPos(glm::vec3 pos);
+	void setOrientation(glm::quat orientation);
+	void setScale(glm::vec3 scale);
 
 	void rotate(glm::vec3 rotation, int relativeTo);
 	void translate(glm::vec3 translation, int relativeTo);

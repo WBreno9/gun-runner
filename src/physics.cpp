@@ -1,10 +1,10 @@
 #include <physics.h>
 
-PhysicsManager::PhysicsManager() {
+Physics::Physics() {
         setup();
 }
 
-PhysicsManager::~PhysicsManager() {
+Physics::~Physics() {
         delete m_dynamicsWorld;
         delete m_solver;
         delete m_broadphase;
@@ -12,17 +12,17 @@ PhysicsManager::~PhysicsManager() {
         delete m_collisionConfiguration;
 }
 
-void PhysicsManager::setup() {
+void Physics::setup() {
         m_collisionConfiguration = new btDefaultCollisionConfiguration();
         m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
         m_broadphase = new btDbvtBroadphase();
         m_solver = new btSequentialImpulseConstraintSolver();
 
         m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
-        m_dynamicsWorld->setGravity(btVector3(0.f, -0.1f, 0.f));
+        m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
-void PhysicsManager::updateTransforms() {
+void Physics::updateTransforms() {
         for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--) {
                 btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
                 btRigidBody* body = btRigidBody::upcast(obj);
@@ -34,53 +34,90 @@ void PhysicsManager::updateTransforms() {
                         transform = obj->getWorldTransform();
                 }
 
-                Transform* entityTransform = (Transform*)body->getUserPointer();
-                entityTransform->translate(glm::vec3(0.f, 
-                                                transform.getOrigin().getY(), 
-                                                transform.getOrigin().getZ()), Transform::WORLD_RELATIVE);
+                Transform* user = (Transform*)body->getUserPointer();
+                
+                if (user != nullptr) {
+                        user->setPos(glm::vec3(
+                                transform.getOrigin().getX(), 
+                                transform.getOrigin().getY(), 
+                                transform.getOrigin().getZ()
+                        ));
+
+                        user->setOrientation(glm::quat(
+                                transform.getRotation().getW(),
+                                transform.getRotation().getX(),
+                                transform.getRotation().getY(),
+                                transform.getRotation().getZ()
+                        ));
+                }
         }
 }
 
-void PhysicsManager::destroyInactiveRigidBodies() {
-        for (auto it = m_rigidBodies.begin(); it != m_rigidBodies.end();) {
-                if (!it->m_isActive) {
-                        auto tmp = it++;
-                        m_rigidBodies.erase(tmp);
+btRigidBody* Physics::createRigidBody(btCollisionShape* shape, bool isKinematic, btScalar mass, Transform* user) {
+        btTransform startTransform = castTransform(*user);
 
-			if (it == m_rigidBodies.end()) 
-				break;
-		} else {
-			it++;
-		}
-        }
-}
-
-PRigidBody* PhysicsManager::createRigidBody(btCollisionShape* shape, Transform* transform, bool isKinematic, btScalar mass) {
-        btTransform startTransform;
-        startTransform.setIdentity();
-        startTransform.setOrigin(btVector3(transform->m_pos.x, 
-                                        transform->m_pos.y, 
-                                        transform->m_pos.z));
+        bool isDynamic = (mass != 0.f);
 
         btVector3 localInertia(0, 0, 0);
-        if (mass != 0.f)
+        if (isDynamic)
                 shape->calculateLocalInertia(mass, localInertia);
 
         btDefaultMotionState* motionState = new btDefaultMotionState(startTransform);
         btRigidBody::btRigidBodyConstructionInfo rbinfo(mass, motionState, shape, localInertia);
+
         btRigidBody* body = new btRigidBody(rbinfo);
 
-        body->setUserPointer(transform);
-
-        if (isKinematic)
-                std::clog << "kinematic" << std::endl;
+        
+        if (isKinematic && mass == 0.f) {
+                body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+                body->setActivationState(DISABLE_DEACTIVATION);
+                body->setUserPointer(nullptr);
+        } else {
+                body->setUserPointer(user);
+        }
 
         m_dynamicsWorld->addRigidBody(body);
 
-        m_rigidBodies.emplace_back(PRigidBody(body, shape, transform, isKinematic, mass));
-        return &m_rigidBodies.back();
+        return body;
 }
 
-void PhysicsManager::step() {
-        m_dynamicsWorld->stepSimulation(1 / 60.f, 1, 1 / 60.f);
+btTransform Physics::castTransform(const Transform& transform) {
+        return btTransform(
+                btQuaternion(
+                        transform.m_orientation.x,
+                        transform.m_orientation.y,
+                        transform.m_orientation.z,
+                        transform.m_orientation.w
+                ),
+                btVector3(
+                        transform.m_pos.x,
+                        transform.m_pos.y,
+                        transform.m_pos.z
+                )
+        );
+}
+
+void Physics::syncTransform(btRigidBody* body, const Transform& transform) {
+        btTransform newTransform = castTransform(transform);
+
+        body->setWorldTransform(newTransform);
+        body->getMotionState()->setWorldTransform(newTransform);
+}
+
+void Physics::destroyRigidBody(btRigidBody* body) {
+
+}
+
+void Physics::lockOrientation(btRigidBody* body) {
+        btTransform transform;
+        body->getMotionState()->getWorldTransform(transform);
+        
+        transform.setRotation(btQuaternion(0, 0, 0, 1));
+
+        body->setWorldTransform(transform);
+        body->getMotionState()->setWorldTransform(transform);
+}
+
+void Physics::step(float delta) {
+        m_dynamicsWorld->stepSimulation(delta);
 }

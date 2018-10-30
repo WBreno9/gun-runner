@@ -5,50 +5,30 @@
 #include <transform.h>
 #include <list>
 
-struct PRigidBody {
-        btRigidBody* m_body;
-        btCollisionShape* m_shape;
-        btScalar m_mass;
-
-        Transform* m_transform;
-
-        bool m_isActive;
-        const bool m_isKinematic;
-
-        PRigidBody(btRigidBody* body, 
-                btCollisionShape* shape, 
-                Transform* transform,
-                bool isKinematic,
-                btScalar mass) :
-                m_body(body),
-                m_shape(shape),
-                m_transform(transform),
-                m_isActive(true),
-                m_isKinematic(isKinematic),
-                m_mass(mass)
-        {}
-};
-
-class PhysicsManager {
+class Physics {
 public:
-        PhysicsManager();
-        ~PhysicsManager();
+        Physics();
+        ~Physics();
 
-        void step();
+        void step(float delta);
 
         void setup();
         void updateTransforms();
-        void destroyInactiveRigidBodies();
 
-        PRigidBody* createRigidBody(btCollisionShape* shape, Transform* transform, bool isKinematic, btScalar mass);
-private:
+        btRigidBody* createRigidBody(btCollisionShape* shape, bool isKinematic, btScalar mass, Transform* user);
+
+        void destroyRigidBody(btRigidBody* body);
+
         btDynamicsWorld* m_dynamicsWorld;
+
+        static btTransform castTransform(const Transform& transform);
+        static void syncTransform(btRigidBody* body, const Transform& transform);
+        static void lockOrientation(btRigidBody* body);
+private:
 	btSequentialImpulseConstraintSolver* m_solver;
 	btCollisionConfiguration* m_collisionConfiguration;
 	btBroadphaseInterface* m_broadphase;
         btCollisionDispatcher* m_dispatcher;
-
-        std::list<PRigidBody> m_rigidBodies;
 };
 
 #endif //PHYSICS_H

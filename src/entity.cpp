@@ -5,7 +5,7 @@ Entity* Entity::head = nullptr;
 GLFWwindow* Entity::window = nullptr;
 float Entity::delta = 0;
 Renderer* Entity::m_renderer = nullptr;
-PhysicsManager* Entity::m_physics = nullptr;
+Physics* Entity::m_physics = nullptr;
 
 Entity::Entity() 
 {
@@ -78,6 +78,15 @@ void Entity::UpdateAll()
 		ent->Update();
 	}
 	ReapDeadEntities();
+}
+
+void Entity::UpdateTransforms() {
+
+	for (Entity* ent = Entity::GetHead(); ent != nullptr;
+		ent = ent->GetNext()) 
+	{	
+		ent->transform.m_modified = false;
+	}
 }
 
 void Entity::Damage(unsigned d)

@@ -14,7 +14,7 @@ public:
 	static float delta;
 
 	static Renderer* m_renderer;
-	static PhysicsManager* m_physics;
+	static Physics* m_physics;
 
 	bool isDead;
 	float lifeTime;
@@ -30,7 +30,7 @@ public:
 
 	Transform transform;
 
-	PRigidBody* rigidBody;
+	btRigidBody* rigidBody;
 
 	Entity();
 	virtual ~Entity();
@@ -41,6 +41,8 @@ public:
 	static void SetAllDead();
 	static void ReapDeadEntities();
 	static void UpdateAll();
+
+	static void UpdateTransforms();
 
 	virtual std::string GetTypeString() = 0;
 

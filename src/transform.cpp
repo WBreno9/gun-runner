@@ -9,6 +9,28 @@ void Transform::setIndentity() {
 	m_up = glm::vec3(0.f, 1.f, 0.f);
 
 	m_orientation = glm::quat(glm::vec3(0.f));
+
+	m_modified = true;
+}
+
+void Transform::setPos(glm::vec3 pos) {
+	m_pos = pos;
+	m_modified = true;
+}
+
+void Transform::setOrientation(glm::quat orientation) {
+	m_orientation = glm::normalize(orientation);
+
+	m_right   = m_orientation * m_right;
+	m_forward = m_orientation * m_forward;
+	m_up      = m_orientation * m_up;
+
+	m_modified = true;
+}
+
+void Transform::setScale(glm::vec3 scale) {
+	m_scale = scale;
+	m_modified = true;
 }
 
 void Transform::rotate(glm::vec3 rotation, int relativeTo) {
@@ -30,6 +52,8 @@ void Transform::rotate(glm::vec3 rotation, int relativeTo) {
 
 	m_orientation *= orientation;
 		m_orientation = glm::normalize(m_orientation);
+
+	m_modified = true;
 }
 
 void Transform::translate(glm::vec3 translation, int relativeTo) {
@@ -42,6 +66,8 @@ void Transform::translate(glm::vec3 translation, int relativeTo) {
 		m_pos.y += translation.y;
 		m_pos.z += translation.z;
 	}
+
+	m_modified = true;
 }
 
 void Transform::scale(glm::vec3 scale, int relativeTo) {
@@ -54,6 +80,8 @@ void Transform::scale(glm::vec3 scale, int relativeTo) {
 		m_scale.y += scale.y;
 		m_scale.z += scale.z;
 	}
+
+	m_modified = true;
 }
 
 glm::mat4 Transform::getMatrix() {

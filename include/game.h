@@ -31,7 +31,7 @@ private:
         void mainLoop();
 
         Renderer *renderer;
-        PhysicsManager *physics;
+        Physics *physics;
 };
 
 #endif

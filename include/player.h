@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <camera.h>
+#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 
 class EPlayer : public Entity {
 public:

@@ -17,22 +17,41 @@ layout(std140) uniform lightsBlock {
         light lights[NUM_MAX_LIGHTS];
 }lightsData;
 
+float Lambert(vec3 l, vec3 n){
+	float ldotn = clamp(dot(l, n), 0, 1);
+	return ldotn;
+}
+
+float BlinnPhong(vec3 n, vec3 h, float ex){
+	float ndoth = clamp(dot(n, h), 0, 1);
+	return pow(ndoth, ex);
+}
+
+float SchlickFresnel(vec3 h, vec3 v, float F0){
+	return F0 + (1.0-F0) * pow( 1.0 - dot(h, v), 5.0);
+}
+
 void main(void)
 {
-        vec3 diffColor = vec3(1.0f);
-        vec3 color = vec3(0.f);
-
+        vec3 albedoColor = vec3(1.0);
+        vec3 color = vec3(0);
+        vec3 diffuse = vec3(0.0);
+        
         for (int i = 0; i < lightsData.numLights; i++) {
                 light l = lightsData.lights[i];
+                vec3 lpos = l.pos;
 
-                vec3 ldir = normalize(l.pos - Position);
-                float dist = length(l.pos - Position);
-                float attenuation = 1.0f / (dist * dist);
+                vec3 ldir = normalize(lpos - Position);
+
+                float lightDist = length(lpos - Position);
 
                 float ndotl = dot(Normal, ldir);
+                float halfLambert = pow((Lambert(ldir, Normal)*0.5)+0.5, 2);
 
-                color += diffColor * vec3(ndotl) * attenuation * l.color;   
+                diffuse += albedoColor * 500 * l.color * halfLambert * Lambert(ldir, Normal)/(lightDist*lightDist); 
         }
 
-        outColor = vec4(color, 1.0f);
+       
+
+        outColor = vec4(diffuse, 1.0f);
 }

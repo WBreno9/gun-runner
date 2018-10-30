@@ -71,7 +71,7 @@ void Game::createWindow(unsigned w, unsigned h)
         renderer = new Renderer();
         Entity::m_renderer = renderer;
 
-        physics = new PhysicsManager();
+        physics = new Physics();
         Entity::m_physics = physics;
 }
 
@@ -106,29 +106,34 @@ void Game::restart()
 
         glfwSetCursorPos(Entity::window, width/2, height/2);
 
-        Game::mainCamera = new Camera(90.f, (float)width/height, 0.1f, 100.f);
-        mainCamera->transform.translate(glm::vec3(1.f), Transform::WORLD_RELATIVE);
-        mainCamera->LookAt(glm::vec3(0.f));
+        Game::mainCamera = new Camera(45.f, (float)width/height, 0.1f, 100.f);
+        mainCamera->LookAt(glm::vec3(0));
 
         EPlayer* player = new EPlayer(Game::mainCamera);
-        player->transform.translate(glm::vec3(0.f, 1.f, 0.f), Transform::WORLD_RELATIVE);
+        player->transform.translate(glm::vec3(0, 2, 2), Transform::WORLD_RELATIVE);
 
-        //EMap* map = new EMap("test_map");
+        EMap* map = new EMap("test_map");
+        map->transform.scale(glm::vec3(2), Transform::WORLD_RELATIVE);
+        map->transform.translate(glm::vec3(0, -0.49, 0), Transform::WORLD_RELATIVE);
 
-        EBox* box = new EBox(1.f, 0.01f);
-        box->transform.translate(glm::vec3(-1.f, 1.f, 0.f), Transform::WORLD_RELATIVE);
+        EBox* ground = new EBox(50, 0, glm::vec3(0, -25-0.5, 0));
 
-        EBox* box1 = new EBox(10.f, 0.f);
-        box1->transform.translate(glm::vec3(0.f, -4.f, 0.f), Transform::WORLD_RELATIVE);
-        
+        for (int i = -2; i <= 2; i++) {
+                for (int j = -2; j <= 2; j++) {
+                        for (int k = -2; k <= 2; k++) {
+                                new EBox(1, 1, glm::vec3(i, j + 11,k));
+                        }
+                }
+        }
+
         ELight* light = new ELight();
-        light->transform.m_pos =  glm::vec3(5.f, 7.f, 5.f);
-        light->setColor(glm::vec3(20.f));
+        light->transform.m_pos =  glm::vec3(15, 20, 10);
+        light->setColor(glm::vec3(1, 0,0));
         //light->lifeTime = 2.0f;
 
-        //ELight* light1 = new ELight();
-        //light1->transform.m_pos =  glm::vec3(-5.f, 3.f, 0.f);
-        //light1->setColor(glm::vec3(15.f));
+        ELight* light1 = new ELight();
+        light1->transform.m_pos =  glm::vec3(-30, 10, 15);
+        light1->setColor(glm::vec3(0,1,0));
 
 }
 
@@ -167,10 +172,10 @@ void Game::mainLoop()
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glViewport(0, 0, width, height);
 
-                physics->destroyInactiveRigidBodies();	
-                physics->step();	
+                physics->step(delta);	
                 physics->updateTransforms();
 
+                Entity::UpdateTransforms();
                 Entity::UpdateAll();
 
 		renderer->destroyInactiveLights();

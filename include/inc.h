@@ -22,6 +22,6 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include <bullet/btBulletDynamicsCommon.h>
-
+#include <bullet/btBulletCollisionCommon.h>
 
 #endif

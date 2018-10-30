@@ -5,7 +5,7 @@
 
 class EBox : public Entity {
 public:
-        EBox(float scale, float mass);
+        EBox(float scale, float mass, glm::vec3 pos);
         ~EBox();
 
         std::string GetTypeString() { return "box"; }
