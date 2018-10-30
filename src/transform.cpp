@@ -89,3 +89,7 @@ glm::mat4 Transform::getMatrix() {
 		glm::mat4_cast(m_orientation) * 
 		glm::scale(m_scale);
 }
+
+glm::vec3 Transform::getForward() {
+	return m_forward;
+}

@@ -146,3 +146,14 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
     }
     return textureID;
 }
+
+std::vector<glm::vec3> Model::GetCoords() {
+	std::vector<glm::vec3> coordenadas;
+	for(int i = 0; i < meshes.size(); i++) {
+		Mesh m = meshes[i];
+		for(int j = 0; j < m.vertices.size(); j++) {
+			coordenadas.push_back(m.vertices[j].coords);
+		}
+	}
+	return coordenadas;
+}

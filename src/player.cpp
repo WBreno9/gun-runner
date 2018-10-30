@@ -35,6 +35,14 @@ void EPlayer::inputMouse() {
         m_cam->transform.rotate(glm::vec3(0.f, angleDeltaX, 0.f), Transform::WORLD_RELATIVE);
         
         glfwSetCursorPos(Entity::window, winW/2, winH/2);
+
+
+        if(glfwGetMouseButton(Entity::window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+                glm::vec3 forward = transform.getForward();
+        }
+        if(glfwGetMouseButton(Entity::window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+
+        }
 }
 
 void EPlayer::inputKeyboard() {
@@ -52,6 +60,12 @@ void EPlayer::inputKeyboard() {
 void EPlayer::Update() {
         inputMouse();
         inputKeyboard();
+<<<<<<< HEAD
         
         m_cam->transform.setPos(transform.m_pos + glm::vec3(0, 1.5, 0));
 }
+=======
+
+        m_cam->transform = transform;
+}
+>>>>>>> origin/alterations
