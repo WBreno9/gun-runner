@@ -44,6 +44,7 @@ public:
 
         bool LoadModel(const std::string &file_name);
 
+        std::vector<glm::vec3> GetCoords();
         std::vector<Mesh>* GetMeshes();
 private:
         std::string name;
