@@ -60,12 +60,6 @@ void EPlayer::inputKeyboard() {
 void EPlayer::Update() {
         inputMouse();
         inputKeyboard();
-<<<<<<< HEAD
-        
-        m_cam->transform.setPos(transform.m_pos + glm::vec3(0, 1.5, 0));
-}
-=======
 
         m_cam->transform = transform;
 }
->>>>>>> origin/alterations
