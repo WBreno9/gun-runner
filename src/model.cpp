@@ -157,3 +157,14 @@ std::vector<glm::vec3> Model::GetCoords() {
 	}
 	return coordenadas;
 }
+
+std::vector<GLushort> Model::GetIndices() {
+	std::vector<GLushort> indices;
+	for(int i = 0; i < meshes.size(); i++) {
+		Mesh m = meshes[i];
+		for(int j = 0; j < m.indices.size(); j++) {
+			indices.push_back(m.indices[j]);
+		}
+	}
+	return indices;
+}

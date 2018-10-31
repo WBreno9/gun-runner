@@ -25,14 +25,13 @@ void EPlayer::inputMouse() {
         float angleDeltaY = m_mouseSpeed * delta * float(winH/2 - mouseY);
 
         if (std::abs(m_angleY + angleDeltaY) < glm::pi<float>()/2.f - 0.01f) {
-                m_cam->transform.rotate(glm::vec3(angleDeltaY, 0.f, 0.f), Transform::SELF_RELATIVE);
+                transform.rotate(glm::vec3(angleDeltaY, 0.f, 0.f), Transform::SELF_RELATIVE);
                 m_angleY += angleDeltaY;
         }
 
         m_angleX += angleDeltaX;
 
         transform.rotate(glm::vec3(0.f, angleDeltaX, 0.f), Transform::WORLD_RELATIVE);
-        m_cam->transform.rotate(glm::vec3(0.f, angleDeltaX, 0.f), Transform::WORLD_RELATIVE);
         
         glfwSetCursorPos(Entity::window, winW/2, winH/2);
 

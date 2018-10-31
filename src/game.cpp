@@ -112,9 +112,9 @@ void Game::restart()
         EPlayer* player = new EPlayer(Game::mainCamera);
         player->transform.translate(glm::vec3(0, 2, 2), Transform::WORLD_RELATIVE);
 
-        EMap* map = new EMap("test_map");
-        map->transform.scale(glm::vec3(2), Transform::WORLD_RELATIVE);
-        map->transform.translate(glm::vec3(0, -0.49, 0), Transform::WORLD_RELATIVE);
+        //EMap* map = new EMap("test_map");
+        //map->transform.scale(glm::vec3(2), Transform::WORLD_RELATIVE);
+        //map->transform.translate(glm::vec3(0, -0.49, 0), Transform::WORLD_RELATIVE);
 
         EBox* ground = new EBox(50, 0, glm::vec3(0, -25-0.5, 0));
 

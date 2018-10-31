@@ -186,7 +186,7 @@ void Renderer::loadAllModels() {
         loadModel("error");
         loadModel("test_map");
         loadModel("box");
-        //loadModel("nanosuit/nanosuit");
+        loadModel("nanosuit/nanosuit");
 }
 
 void Renderer::loadModel(const std::string &modelName) {
