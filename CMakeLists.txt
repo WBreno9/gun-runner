@@ -18,6 +18,7 @@ set(SOURCES
         src/transform.cpp
         src/physics.cpp
         src/box.cpp
+        src/FastNoise.cpp
         )
 
 set(DEPS_ROOT "" CACHE PATH "Dependencies directory")

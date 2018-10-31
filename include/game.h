@@ -6,6 +6,9 @@
 #include <camera.h>
 #include <renderer.h>
 #include <physics.h>
+#include <box.h>
+
+#define MAP_SIZE 35
 
 class Game
 {
@@ -26,6 +29,11 @@ private:
         std::vector<Model*> models;
 
         void DrawAll();
+        void DrawMap(int boxSize, int modelFootPrint, int interval, float frequence);
+        void DrawMap(int boxSize, int interval, float frequence);
+
+        void TallMap(int boxSize, EBox* box, int x, int y, int z);
+        void FlatMap(int boxSize, EBox* box, int x, int y, int z);
 
         void updateDelta();
         void mainLoop();

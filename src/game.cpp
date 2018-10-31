@@ -4,6 +4,7 @@
 #include <player.h>
 #include <map.h>
 #include <box.h>
+#include <FastNoise.h>
 
 static void error_callback(int error, const char* desc)
 {
@@ -116,6 +117,8 @@ void Game::restart()
         //map->transform.scale(glm::vec3(2), Transform::WORLD_RELATIVE);
         //map->transform.translate(glm::vec3(0, -0.49, 0), Transform::WORLD_RELATIVE);
 
+
+/*
         EBox* ground = new EBox(50, 0, glm::vec3(0, -25-0.5, 0));
 
         for (int i = -2; i <= 2; i++) {
@@ -125,6 +128,8 @@ void Game::restart()
                         }
                 }
         }
+*/
+
 
         ELight* light = new ELight();
         light->transform.m_pos =  glm::vec3(15, 20, 10);
@@ -158,8 +163,11 @@ void Game::mainLoop()
 {	
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
-
         float currentTime, pastTime;
+
+
+        DrawMap(3, 9, 10, 0.05f);
+
         while (!glfwWindowShouldClose(window)) {
                 glfwPollEvents();
 
@@ -189,5 +197,56 @@ void Game::mainLoop()
                         restart();
 
                 glfwSwapBuffers(window);
+        }
+}
+
+inline void Game::FlatMap(int boxSize, EBox* box, int x, int y, int z){
+
+    box = new EBox(boxSize, 0, glm::vec3(x, y * boxSize, z));
+}
+
+inline void Game::TallMap(int boxSize, EBox* box, int x, int y, int z){
+
+    for( int i = 0; i < y; i++){
+            box = new EBox(boxSize, 0, glm::vec3(x, i*boxSize, z));
+        }
+}
+
+void Game::DrawMap(int boxSize, int modelFootPrint, int interval, float frequence){
+
+    FastNoise fn;
+    fn.SetNoiseType(FastNoise::SimplexFractal);
+    fn.SetFrequency(frequence);
+    EBox* box;
+
+    float heightMap[MAP_SIZE][MAP_SIZE];
+    int m = MAP_SIZE / 2;
+
+    for (int i = -m; i < m; i++)
+        for (int j = -m; j < m; j++)
+        {
+            int h = abs((int)(fn.GetNoise(i,j) * interval));
+
+            h += 5;
+            TallMap(boxSize, box, i * modelFootPrint, h, j * modelFootPrint);    
+        }
+}
+
+void Game::DrawMap(int boxSize, int interval, float frequence){
+
+    FastNoise fn;
+    fn.SetNoiseType(FastNoise::SimplexFractal);
+    fn.SetFrequency(frequence);
+    EBox* box;
+
+    float heightMap[MAP_SIZE][MAP_SIZE];
+    int m = MAP_SIZE / 2;
+
+    for (int i = -m; i < m; i++)
+        for (int j = -m; j < m; j++)
+        {
+            int h = (int)(fn.GetNoise(i,j) * interval);
+
+            FlatMap(boxSize, box, i, 0, j);    
         }
 }
