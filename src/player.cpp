@@ -8,6 +8,9 @@ EPlayer::EPlayer(Camera* cam) :
         m_angleY(0.f)
 {
         m_cam->transform = transform;
+
+        btCollisionShape* shape = new btBoxShape(btVector3(1, 1, 1));
+        rigidBody = m_physics->createRigidBody(shape, true, 0, &transform);
 }
 
 EPlayer::~EPlayer() {
@@ -59,6 +62,8 @@ void EPlayer::inputKeyboard() {
 void EPlayer::Update() {
         inputMouse();
         inputKeyboard();
+
+        Physics::syncTransform(rigidBody, transform);
 
         m_cam->transform = transform;
 }

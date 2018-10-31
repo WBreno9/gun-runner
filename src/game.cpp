@@ -107,7 +107,7 @@ void Game::restart()
 
         glfwSetCursorPos(Entity::window, width/2, height/2);
 
-        Game::mainCamera = new Camera(45.f, (float)width/height, 0.1f, 100.f);
+        Game::mainCamera = new Camera(45.f, (float)width/height, 0.1f, 500.f);
         mainCamera->LookAt(glm::vec3(0));
 
         EPlayer* player = new EPlayer(Game::mainCamera);
@@ -117,18 +117,15 @@ void Game::restart()
         //map->transform.scale(glm::vec3(2), Transform::WORLD_RELATIVE);
         //map->transform.translate(glm::vec3(0, -0.49, 0), Transform::WORLD_RELATIVE);
 
+        EBox* ground = new EBox(200, 0, glm::vec3(0, -100-0.5, 0));
 
-/*
-        EBox* ground = new EBox(50, 0, glm::vec3(0, -25-0.5, 0));
-
-        for (int i = -2; i <= 2; i++) {
+        /*for (int i = -2; i <= 2; i++) {
                 for (int j = -2; j <= 2; j++) {
                         for (int k = -2; k <= 2; k++) {
                                 new EBox(1, 1, glm::vec3(i, j + 11,k));
                         }
                 }
-        }
-*/
+        }*/
 
 
         ELight* light = new ELight();
@@ -138,7 +135,7 @@ void Game::restart()
 
         ELight* light1 = new ELight();
         light1->transform.m_pos =  glm::vec3(-30, 10, 15);
-        light1->setColor(glm::vec3(0,1,0));
+        light1->setColor(glm::vec3(0,0,1));
 
 }
 
@@ -164,7 +161,6 @@ void Game::mainLoop()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         float currentTime, pastTime;
-
 
         DrawMap(3, 9, 10, 0.05f);
 
@@ -202,13 +198,13 @@ void Game::mainLoop()
 
 inline void Game::FlatMap(int boxSize, EBox* box, int x, int y, int z){
 
-    box = new EBox(boxSize, 0, glm::vec3(x, y * boxSize, z));
+    box = new EBox(boxSize, 1, glm::vec3(x, y * boxSize, z));
 }
 
 inline void Game::TallMap(int boxSize, EBox* box, int x, int y, int z){
 
     for( int i = 0; i < y; i++){
-            box = new EBox(boxSize, 0, glm::vec3(x, i*boxSize, z));
+            box = new EBox(boxSize, 1, glm::vec3(x, i*boxSize, z));
         }
 }
 
@@ -222,8 +218,8 @@ void Game::DrawMap(int boxSize, int modelFootPrint, int interval, float frequenc
     float heightMap[MAP_SIZE][MAP_SIZE];
     int m = MAP_SIZE / 2;
 
-    for (int i = -m; i < m; i++)
-        for (int j = -m; j < m; j++)
+    for (int i = -10; i < 10; i++)
+        for (int j = -10; j < 10; j++)
         {
             int h = abs((int)(fn.GetNoise(i,j) * interval));
 

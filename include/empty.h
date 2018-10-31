@@ -6,7 +6,7 @@
 class Empty : public Entity
 {
 public:
-	Empty(); 
+	Empty(std::string modelName); 
 	~Empty();
 
 	std::string GetTypeString() { return "Empty"; }
